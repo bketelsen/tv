@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -38,8 +39,10 @@ func main() {
 	command := os.Args[1]
 	params := os.Args[2]
 
-	t, err := telnet.Dial("tcp", "192.168.1.206:10002")
+	t, err := telnet.Dial("tcp", "10.0.1.254:10002")
 	checkErr(err)
+
+	fmt.Println("dialed")
 	t.SetUnixWriteMode(true)
 	var data []byte
 	switch command {
@@ -55,6 +58,8 @@ func main() {
 		vol := rightPad(params)
 		sendln(t, "VOLM"+vol)
 		data, err = t.ReadBytes('\r')
+	case "wide":
+		sendln(t, "WIDE8   ")
 	default:
 		log.Fatalln("bad command: " + command)
 	}
